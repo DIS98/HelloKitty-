@@ -1,0 +1,144 @@
+/* 基础样式 */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #FFF0F5;
+    color: #8B4513;
+    overflow-x: hidden;
+}
+
+/* 导航栏滚动效果 */
+#mainNav {
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+#mainNav.scrolled {
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* 导航链接动画 */
+.nav-link {
+    position: relative;
+    padding-bottom: 4px;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #FF69B4;
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* 移动导航菜单动画 */
+#mobileMenu.open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* 音乐播放器动画 */
+#musicToggle.playing i {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+/* 倒计时提示动画 */
+#musicAlert.active {
+    transform: scale(1);
+    opacity: 1;
+}
+
+/* 作品和商品过滤动画 */
+.work-item, .shop-item {
+    transition: all 0.5s ease;
+}
+
+.work-item.hide, .shop-item.hide {
+    opacity: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+/* 购物车动画 */
+#cartSidebar.open {
+    transform: translateX(0);
+}
+
+#cartOverlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* 通知动画 */
+#notification.active {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+/* 返回顶部按钮动画 */
+#backToTop.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 作品和商品卡片悬停效果 */
+.work-item, .shop-item {
+    transition: all 0.3s ease;
+}
+
+.work-item:hover, .shop-item:hover {
+    transform: translateY(-5px);
+}
+
+/* 购物车添加动画 */
+.add-to-cart.success {
+    background-color: #22c55e;
+    color: white;
+    animation: addToCart 0.5s ease;
+}
+
+@keyframes addToCart {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
+/* 联系表单提交动画 */
+#contactForm.loading button[type="submit"] {
+    background-color: #FFB6C1;
+    cursor: not-allowed;
+    position: relative;
+    overflow: hidden;
+}
+
+#contactForm.loading button[type="submit"]::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    100% { left: 100%; }
+}

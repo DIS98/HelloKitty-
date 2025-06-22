@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello Kitty动画系列 | Hello Kitty乐园</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF69B4',
+                        secondary: '#FFB6C1',
+                        accent: '#FFC0CB',
+                        dark: '#8B4513',
+                        light: '#FFF0F5'
+                    },
+                    fontFamily: {
+                        poppins: ['Poppins', 'sans-serif'],
+                        comic: ['Comic Neue', 'cursive']
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            }
+            .text-shadow-lg {
+                text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            }
+            .animate-float {
+                animation: float 3s ease-in-out infinite;
+            }
+            .animate-bounce-slow {
+                animation: bounce 3s infinite;
+            }
+            .kitty-shadow {
+                filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+            }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+    </style>
+</head>
+<body class="font-poppins bg-light text-dark overflow-x-hidden">
+    <!-- 音乐播放器 - 默认隐藏 -->
+    <audio id="bgMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- 导航栏 -->
+    <nav id="mainNav" class="fixed w-full z-50 transition-all duration-300">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="../index.html" class="flex items-center space-x-2">
+                <img src="https://picsum.photos/50/50?random=1" alt="Hello Kitty Logo" class="w-10 h-10 rounded-full animate-float">
+                <span class="text-xl font-comic font-bold text-primary text-shadow">Hello Kitty</span>
+            </a>
+            
+            <!-- 桌面导航 -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="../index.html#home" class="nav-link font-medium hover:text-primary transition-colors">首页</a>
+                <a href="../index.html#about" class="nav-link font-medium hover:text-primary transition-colors">关于她</a>
+                <a href="../index.html#works" class="nav-link font-medium hover:text-primary transition-colors">作品</a>
+                <a href="../index.html#shop" class="nav-link font-medium hover:text-primary transition-colors">周边商店</a>
+                <a href="../index.html#contact" class="nav-link font-medium hover:text-primary transition-colors">联系我们</a>
+                <div class="flex items-center space-x-2">
+                    <span id="clock" class="text-sm font-medium bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full"></span>
+                    <button id="musicToggle" class="p-2 bg-primary/90 text-white rounded-full hover:bg-primary transition-colors">
+                        <i class="fa fa-music"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 移动端汉堡菜单 -->
+            <button id="mobileMenuBtn" class="md:hidden p-2 bg-primary/90 text-white rounded-full">
+                <i class="fa fa-bars"></i>
+            </button>
+        </div>
+        
+        <!-- 移动端导航菜单 -->
+        <div id="mobileMenu" class="md:hidden bg-white shadow-lg absolute w-full left-0 top-full transform -translate-y-full opacity-0 transition-all duration-300 pointer-events-none">
+            <div class="container mx-auto px-4 py-3 flex flex-col space-y-4">
+                <a href="../index.html#home" class="mobile-nav-link py-2 border-b border-gray-100">首页</a>
+                <a href="../index.html#about" class="mobile-nav-link py-2 border-b border-gray-100">关于她</a>
+                <a href="../index.html#works" class="mobile-nav-link py-2 border-b border-gray-100">作品</a>
+                <a href="../index.html#shop" class="mobile-nav-link py-2 border-b border-gray-100">周边商店</a>
+                <a href="../index.html#contact" class="mobile-nav-link py-2">联系我们</a>
+                <div class="flex items-center justify-between">
+                    <span id="mobileClock" class="text-sm font-medium bg-primary/10 px-3 py-1 rounded-full"></span>
+                    <button id="mobileMusicToggle" class="p-2 bg-primary/90 text-white rounded-full">
+                        <i class="fa fa-music"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main class="pt-24">
+        <!-- 面包屑导航 -->
+        <div class="bg-white py-4">
+            <div class="container mx-auto px-4">
+                <nav class="flex" aria-label="Breadcrumb">
+                    <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                        <li class="inline-flex items-center">
+                            <a href="../index.html" class="text-dark/70 hover:text-primary text-sm font-medium">
+                                <i class="fa fa-home mr-1"></i>首页
+                            </a>
+                        </li>
+                        <li>
+                            <div class="flex items-center">
+                                <i class="fa fa-angle-right text-dark/40 mx-2"></i>
+                                <a href="../index.html#works" class="text-dark/70 hover:text-primary text-sm font-medium">作品</a>
+                            </div>
+                        </li>
+                        <li aria-current="page">
+                            <div class="flex items-center">
+                                <i class="fa fa-angle-right text-dark/40 mx-2"></i>
+                                <span class="text-primary text-sm font-medium">动画系列</span>
+                            </div>
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        
+        <!-- 动画系列介绍 -->
+        <section class="py-12 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h1 class="text-3xl font-comic font-bold text-dark mb-4">Hello Kitty动画系列</h1>
+                    <p class="text-dark/70 max-w-3xl mx-auto">
+                        探索Hello Kitty在电视动画中的精彩表现！自1974年诞生以来，Hello Kitty已经出现在多部动画作品中，陪伴着一代又一代的观众成长。
+                    </p>
+                </div>
+                
+                <!-- 动画作品列表 -->
+                <div class="space-y-12">
+                    <!-- 作品1 -->
+                    <div class="grid md:grid-cols-3 gap-8 items-center bg-light rounded-2xl overflow-hidden">
+                        <div class="md:col-span-1 relative overflow-hidden h-64 md:h-auto">
+                            <img src="images\TaleTheater.png" alt="Hello Kitty's Furry Tale Theater" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-dark/70 to-transparent flex items-end p-6">
+                                <span class="text-white font-bold">1987-1989</span>
+                            </div>
+                        </div>
+                        <div class="md:col-span-2 p-6">
+                            <h2 class="text-2xl font-bold text-dark mb-3">Hello Kitty's Furry Tale Theater</h2>
+                            <div class="flex text-yellow-400 text-sm mb-4">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star-half-o"></i>
+                                <span class="text-dark/70 ml-2">4.5/5.0</span>
+                            </div>
+                            <p class="text-dark/80 mb-4">
+                                《Hello Kitty's Furry Tale Theater》是Hello Kitty的首部电视动画系列，于1987年首播。这部动画将经典童话与Hello Kitty的世界相结合，讲述了Hello Kitty和她的朋友们在童话世界中的冒险故事。
+                            </p>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">儿童</span>
+                                <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">童话</span>
+                                <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">冒险</span>
+                                <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">喜剧</span>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="flex items-center">
+                                    <i class="fa fa-film text-primary mr-2"></i>
+                                    <span class="text-dark/70">26集</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa fa-clock-o text-primary mr-2"></i>
+                                    <span class="text-dark/70">每集22分钟</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa fa-globe text-primary mr-2"></i>
+                                    <span class="text-dark/70">日本、美国</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 作品2 -->
+                    <div class="grid md:grid-cols-3 gap-8 items-center bg-light rounded-2xl overflow-hidden">
+                        <div class="md:col-span-1 relative overflow-hidden h-64 md:h-auto">
+                            <img src="images\friends.png" alt="Hello Kitty and Friends" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-dark/70 to-transparent flex items-end p-6">
+                                <span class="text-white font-bold">1993-1995</span>
+                            </div>
+                        </div>
+                        <div class="md:col-span-2 p-6">
+                            <h2 class="text-2xl font-bold text-dark mb-3">Hello Kitty and Friends</h2>
+                            <div class="flex text-yellow-400 text-sm mb-4">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <span class="text-dark/70 ml-2">5.0/5.0</span>
+                            </div>
+                            <p class="text-dark/80 mb-4">
+                                《Hello Kitty and Friends》是一部更具互动性的动画系列，于1993年推出。这部动画聚焦于Hello Kitty和她的朋友们的日常生活，通过有趣的故事和歌曲，向孩子们传递友谊、分享和爱的重要性。
+                            </p>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">儿童</span>
+                                <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">生活</span>
+                                <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">音乐</span>
+                                <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">教育</span>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="flex items-center">
+                                    <i class="fa fa-film text-primary mr-2"></i>
+                                    <span class="text-dark/70">52集</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa fa-clock-o text-primary mr-2"></i>
+                                    <span class="text-dark/70">每集30分钟</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa fa-globe text-primary mr-2"></i>
+                                    <span class="text-dark/70">日本、美国</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 作品3 -->
+                    <div class="grid md:grid-cols-3 gap-8 items-center bg-light rounded-2xl overflow-hidden">
+                        <div class="md:col-span-1 relative overflow-hidden h-64 md:h-auto">
+                            <img src="images\Supercute Adventures.png" alt="Hello Kitty: Supercute Adventures" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-dark/70 to-transparent flex items-end p-6">
+                                <span class="text-white font-bold">2014-2019</span>
+                            </div>
+                        </div>
+                        <div class="md:col-span-2 p-6">
+                            <h2 class="text-2xl font-bold text-dark mb-3">Hello Kitty: Supercute Adventures</h2>
+                            <div class="flex text-yellow-400 text-sm mb-4">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star-o"></i>
+                                <span class="text-dark/70 ml-2">4.0/5.0</span>
+                            </div>
+                            <p class="text-dark/80 mb-4">
+                                《Hello Kitty: Supercute Adventures》是一部全新风格的动画系列，于2014年推出。这部动画采用了现代化的视觉风格和更加丰富的剧情，讲述了Hello Kitty和她的朋友们在Sanrio Town的冒险故事。
+                            </p>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">儿童</span>
+                                <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">冒险</span>
+                                <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">奇幻</span>
+                                <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">喜剧</span>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="flex items-center">
+                                    <i class="fa fa-film text-primary mr-2"></i>
+                                    <span class="text-dark/70">104集</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa fa-clock-o text-primary mr-2"></i>
+                                    <span class="text-dark/70">每集22分钟</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa fa-globe text-primary mr-2"></i>
+                                    <span class="text-dark/70">全球发行</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 作品4 -->
+                    <div class="grid md:grid-cols-3 gap-8 items-center bg-light rounded-2xl overflow-hidden">
+                        <div class="md:col-span-1 relative overflow-hidden h-64 md:h-auto">
+                            <img src="images\Our Twinkle Stars!.png" alt="Hello Kitty: Our Twinkle Stars!" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-dark/70 to-transparent flex items-end p-6">
+                                <span class="text-white font-bold">2020-至今</span>
+                            </div>
+                        </div>
+                        <div class="md:col-span-2 p-6">
+                            <h2 class="text-2xl font-bold text-dark mb-3">Hello Kitty: Our Twinkle Stars!</h2>
+                            <div class="flex text-yellow-400 text-sm mb-4">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star-half-o"></i>
+                                <span class="text-dark/70 ml-2">4.5/5.0</span>
+                            </div>
+                            <p class="text-dark/80 mb-4">
+                                《Hello Kitty: Our Twinkle Stars!》是最新的Hello Kitty动画系列，于2020年首播。这部动画结合了音乐、舞蹈和奇幻元素，讲述了Hello Kitty和她的朋友们如何通过音乐和友谊克服困难的故事。
+                            </p>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">儿童</span>
+                                <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">音乐</span>
+                                <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">奇幻</span>
+                                <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">成长</span>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="flex items-center">
+                                    <i class="fa fa-film text-primary mr-2"></i>
+                                    <span class="text-dark/70">进行中</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa fa-clock-o text-primary mr-2"></i>
+                                    <span class="text-dark/70">每集24分钟</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa fa-globe text-primary mr-2"></i>
+                                    <span class="text-dark/70">全球发行</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 观看指南 -->
+        <section class="py-12 bg-light">
+            <div class="container mx-auto px-4">
+                <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <h2 class="text-2xl font-bold text-dark mb-6">如何观看Hello Kitty动画</h2>
+                    
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="bg-light p-6 rounded-xl">
+                            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                                <i class="fa fa-television text-primary text-xl"></i>
+                            </div>
+                            <h3 class="font-bold text-dark mb-2">电视台</h3>
+                            <p class="text-dark/70">
+                                Hello Kitty动画在全球多家电视台播出，包括Cartoon Network、Nickelodeon、迪士尼频道等。请查看当地节目时间表获取更多信息。
+                            </p>
+                        </div>
+                        
+                        <div class="bg-light p-6 rounded-xl">
+                            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                                <i class="fa fa-play-circle text-primary text-xl"></i>
+                            </div>
+                            <h3 class="font-bold text-dark mb-2">流媒体平台</h3>
+                            <p class="text-dark/70">
+                                你可以在Netflix、Amazon Prime Video、YouTube等流媒体平台上观看Hello Kitty动画。部分平台可能需要订阅或付费。
+                            </p>
+                        </div>
+                        
+                        <div class="bg-light p-6 rounded-xl">
+                            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                                <i class="fa fa-dvd text-primary text-xl"></i>
+                            </div>
+                            <h3 class="font-bold text-dark mb-2">DVD和蓝光</h3>
+                            <p class="text-dark/70">
+                                Hello Kitty动画的精选集也可以在DVD和蓝光光盘上购买。访问我们的周边商店了解更多信息。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <img src="https://picsum.photos/50/50?random=1" alt="Hello Kitty Logo" class="w-10 h-10 rounded-full">
+                        <span class="text-xl font-comic font-bold">Hello Kitty</span>
+                    </div>
+                    <p class="text-white/70 mb-4">
+                        欢迎来到Hello Kitty乐园，这里有关于Hello Kitty的一切！我们致力于为粉丝提供最正宗的Hello Kitty产品和最新资讯。
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-white hover:text-primary transition-colors">
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                        <a href="#" class="text-white hover:text-primary transition-colors">
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-white hover:text-primary transition-colors">
+                            <i class="fa fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-white hover:text-primary transition-colors">
+                            <i class="fa fa-youtube-play"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">快速链接</h3>
+                    <ul class="space-y-2">
+                        <li><a href="../index.html#home" class="text-white/70 hover:text-primary transition-colors">首页</a></li>
+                        <li><a href="../index.html#about" class="text-white/70 hover:text-primary transition-colors">关于她</a></li>
+                        <li><a href="../index.html#works" class="text-white/70 hover:text-primary transition-colors">作品</a></li>
+                        <li><a href="../index.html#shop" class="text-white/70 hover:text-primary transition-colors">周边商店</a></li>
+                        <li><a href="../index.html#contact" class="text-white/70 hover:text-primary transition-colors">联系我们</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">客户服务</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-white/70 hover:text-primary transition-colors">购物指南</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-primary transition-colors">支付方式</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-primary transition-colors">配送说明</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-primary transition-colors">退换货政策</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-primary transition-colors">常见问题</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">联系我们</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="fa fa-map-marker mt-1 mr-3"></i>
+                            <span class="text-white/70">武汉市洪山区民族大道182号</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-phone mr-3"></i>
+                            <span class="text-white/70">666-888-9999</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-envelope mr-3"></i>
+                            <span class="text-white/70">contact@hellokitty.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-white/10 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-white/50 text-sm">© 2023 Hello Kitty乐园. 保留所有权利.</p>
+                <div class="flex space-x-4 mt-4 md:mt-0">
+                    <a href="#" class="text-white/50 hover:text-white text-sm transition-colors">隐私政策</a>
+                    <a href="#" class="text-white/50 hover:text-white text-sm transition-colors">使用条款</a>
+                    <a href="#" class="text-white/50 hover:text-white text-sm transition-colors">网站地图</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 回到顶部按钮 -->
+    <button id="backToTop" class="fixed bottom-6 right-6 bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg opacity-0 invisible transition-all duration-300 hover:bg-primary/90">
+        <i class="fa fa-chevron-up"></i>
+    </button>
+
+    <!-- JavaScript -->
+    <script>
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const nav = document.getElementById('mainNav');
+            if (window.scrollY > 50) {
+                nav.classList.add('bg-white', 'shadow-md');
+                nav.classList.remove('bg-transparent');
+            } else {
+                nav.classList.remove('bg-white', 'shadow-md');
+                nav.classList.add('bg-transparent');
+            }
+        });
+        
+        // 移动端菜单切换
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            if (mobileMenu.classList.contains('opacity-0')) {
+                mobileMenu.classList.remove('opacity-0', '-translate-y-full', 'pointer-events-none');
+                mobileMenu.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
+            } else {
+                mobileMenu.classList.add('opacity-0', '-translate-y-full', 'pointer-events-none');
+                mobileMenu.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
+            }
+        });
+        
+        // 音乐播放控制
+        const bgMusic = document.getElementById('bgMusic');
+        const musicToggle = document.getElementById('musicToggle');
+        const mobileMusicToggle = document.getElementById('mobileMusicToggle');
+        
+        function toggleMusic() {
+            if (bgMusic.paused) {
+                bgMusic.play();
+                musicToggle.innerHTML = '<i class="fa fa-pause"></i>';
+                mobileMusicToggle.innerHTML = '<i class="fa fa-pause"></i>';
+            } else {
+                bgMusic.pause();
+                musicToggle.innerHTML = '<i class="fa fa-music"></i>';
+                mobileMusicToggle.innerHTML = '<i class="fa fa-music"></i>';
+            }
+        }
+        
+        musicToggle.addEventListener('click', toggleMusic);
+        mobileMusicToggle.addEventListener('click', toggleMusic);
+        
+        // 时钟显示
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            const timeString = `${hours}:${minutes}:${seconds}`;
+            
+            document.getElementById('clock').textContent = timeString;
+            document.getElementById('mobileClock').textContent = timeString;
+        }
+        
+        // 初始更新时钟
+        updateClock();
+        // 每秒更新一次
+        setInterval(updateClock, 1000);
+        
+        // 回到顶部按钮
+        const backToTopBtn = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 300) {
+                backToTopBtn.classList.remove('opacity-0', 'invisible');
+                backToTopBtn.classList.add('opacity-100', 'visible');
+            } else {
+                backToTopBtn.classList.add('opacity-0', 'invisible');
+                backToTopBtn.classList.remove('opacity-100', 'visible');
+            }
+        });
+        
+        backToTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // 产品详情选项卡切换
+        const productTabs = document.querySelectorAll('.product-tab');
+        const productTabContents = document.querySelectorAll('.product-tab-content');
+        
+        productTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // 移除所有选项卡的活动状态
+                productTabs.forEach(t => {
+                    t.classList.remove('active', 'text-primary', 'border-primary');
+                    t.classList.add('text-dark/70');
+                });
+                
+                // 添加当前选项卡的活动状态
+                tab.classList.add('active', 'text-primary', 'border-b-2', 'border-primary');
+                tab.classList.remove('text-dark/70');
+                
+                // 隐藏所有内容
+                productTabContents.forEach(content => {
+                    content.classList.add('hidden');
+                    content.classList.remove('active');
+                });
+                
+                // 显示当前内容
+                const tabId = tab.getAttribute('data-tab');
+                const activeContent = document.getElementById(tabId);
+                activeContent.classList.remove('hidden');
+                activeContent.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>    

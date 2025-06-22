@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello Kitty电子游戏 | Hello Kitty乐园</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF69B4',
+                        secondary: '#FFB6C1',
+                        accent: '#FFC0CB',
+                        dark: '#8B4513',
+                        light: '#FFF0F5',
+                        platform: {
+                            nintendo: '#E50914',
+                            playstation: '#0044CC',
+                            xbox: '#0078D7',
+                            mobile: '#4CAF50'
+                        }
+                    },
+                    fontFamily: {
+                        poppins: ['Poppins', 'sans-serif'],
+                        comic: ['Comic Neue', 'cursive']
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            }
+            .text-shadow-lg {
+                text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            }
+            .game-card {
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+            .game-card:hover {
+                transform: translateY(-10px) scale(1.02);
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .platform-badge {
+                transition: all 0.3s ease;
+            }
+            .platform-badge:hover {
+                transform: translateY(-3px);
+            }
+            .animate-float {
+                animation: float 6s ease-in-out infinite;
+            }
+            @keyframes float {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-15px); }
+            }
+        }
+    </style>
+</head>
+<body class="font-poppins bg-light text-dark overflow-x-hidden">
+    <!-- 音乐播放器 - 默认隐藏 -->
+    <audio id="bgMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- 导航栏 -->
+    <nav id="mainNav" class="fixed w-full z-50 transition-all duration-300">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="../index.html" class="flex items-center space-x-2">
+                <img src="https://picsum.photos/50/50?random=1" alt="Hello Kitty Logo" class="w-10 h-10 rounded-full animate-float">
+                <span class="text-xl font-comic font-bold text-primary text-shadow">Hello Kitty</span>
+            </a>
+            
+            <!-- 桌面导航 -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="../index.html#home" class="nav-link font-medium hover:text-primary transition-colors">首页</a>
+                <a href="../index.html#about" class="nav-link font-medium hover:text-primary transition-colors">关于她</a>
+                <a href="../index.html#works" class="nav-link font-medium hover:text-primary transition-colors">作品</a>
+                <a href="../index.html#shop" class="nav-link font-medium hover:text-primary transition-colors">周边商店</a>
+                <a href="../index.html#contact" class="nav-link font-medium hover:text-primary transition-colors">联系我们</a>
+                <div class="flex items-center space-x-2">
+                    <span id="clock" class="text-sm font-medium bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full"></span>
+                    <button id="musicToggle" class="p-2 bg-primary/90 text-white rounded-full hover:bg-primary transition-colors">
+                        <i class="fa fa-music"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 移动端汉堡菜单 -->
+            <button id="mobileMenuBtn" class="md:hidden p-2 bg-primary/90 text-white rounded-full">
+                <i class="fa fa-bars"></i>
+            </button>
+        </div>
+        
+        <!-- 移动端导航菜单 -->
+        <div id="mobileMenu" class="md:hidden bg-white shadow-lg absolute w-full left-0 top-full transform -translate-y-full opacity-0 transition-all duration-300 pointer-events-none">
+            <div class="container mx-auto px-4 py-3 flex flex-col space-y-4">
+                <a href="../index.html#home" class="mobile-nav-link py-2 border-b border-gray-100">首页</a>
+                <a href="../index.html#about" class="mobile-nav-link py-2 border-b border-gray-100">关于她</a>
+                <a href="../index.html#works" class="mobile-nav-link py-2 border-b border-gray-100">作品</a>
+                <a href="../index.html#shop" class="mobile-nav-link py-2 border-b border-gray-100">周边商店</a>
+                <a href="../index.html#contact" class="mobile-nav-link py-2">联系我们</a>
+                <div class="flex items-center justify-between">
+                    <span id="mobileClock" class="text-sm font-medium bg-primary/10 px-3 py-1 rounded-full"></span>
+                    <button id="mobileMusicToggle" class="p-2 bg-primary/90 text-white rounded-full">
+                        <i class="fa fa-music"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main class="pt-24">
+        <!-- 面包屑导航 -->
+        <div class="bg-white py-4">
+            <div class="container mx-auto px-4">
+                <nav class="flex" aria-label="Breadcrumb">
+                    <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                        <li class="inline-flex items-center">
+                            <a href="../index.html" class="text-dark/70 hover:text-primary text-sm font-medium">
+                                <i class="fa fa-home mr-1"></i>首页
+                            </a>
+                        </li>
+                        <li>
+                            <div class="flex items-center">
+                                <i class="fa fa-angle-right text-dark/40 mx-2"></i>
+                                <a href="../index.html#works" class="text-dark/70 hover:text-primary text-sm font-medium">作品</a>
+                            </div>
+                        </li>
+                        <li aria-current="page">
+                            <div class="flex items-center">
+                                <i class="fa fa-angle-right text-dark/40 mx-2"></i>
+                                <span class="text-primary text-sm font-medium">电子游戏</span>
+                            </div>
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        
+        <!-- 游戏英雄区 -->
+        <section class="relative bg-dark overflow-hidden">
+            <div class="absolute inset-0 z-0">
+                <img src="https://picsum.photos/1600/600?random=31" alt="Hello Kitty电子游戏" class="w-full h-96 object-cover opacity-30">
+                <div class="absolute inset-0 bg-gradient-to-r from-dark to-transparent"></div>
+            </div>
+            <div class="container mx-auto px-4 relative z-10 py-16 md:py-24">
+                <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-comic font-bold text-white text-shadow-lg mb-4">Hello Kitty电子游戏</h1>
+                <p class="text-white/80 max-w-2xl text-lg md:text-xl mb-8">
+                    探索Hello Kitty的游戏世界，从休闲益智到冒险解谜，每一款游戏都充满欢乐与惊喜
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#games" class="inline-block bg-primary hover:bg-primary/90 text-white font-medium px-8 py-3 rounded-full transition-colors shadow-lg">
+                        浏览全部游戏 <i class="fa fa-gamepad ml-2"></i>
+                    </a>
+                    <a href="#platforms" class="inline-block bg-white/20 hover:bg-white/30 text-white font-medium px-8 py-3 rounded-full transition-colors backdrop-blur-sm">
+                        按平台筛选 <i class="fa fa-desktop ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 游戏介绍 -->
+        <section class="py-16 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-comic font-bold text-dark mb-4">关于Hello Kitty游戏</h2>
+                    <p class="text-dark/70 max-w-3xl mx-auto">
+                        自1980年代以来，Hello Kitty已在超过50款电子游戏中担任主角，涵盖任天堂、索尼、微软等多个平台。从经典的掌机游戏到现代的主机大作，Hello Kitty的游戏始终以欢乐、创意和教育性为核心，适合各年龄段玩家。
+                    </p>
+                </div>
+                
+                <div class="grid md:grid-cols-3 gap-8 mb-16">
+                    <div class="bg-light p-8 rounded-2xl game-card">
+                        <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-6 mx-auto">
+                            <i class="fa fa-joystick text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-dark text-center mb-4">全平台覆盖</h3>
+                        <p class="text-dark/80 text-center">
+                            从Nintendo Switch到手机平台，Hello Kitty游戏覆盖多种设备，让你随时随地享受游戏乐趣。
+                        </p>
+                    </div>
+                    
+                    <div class="bg-light p-8 rounded-2xl game-card">
+                        <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-6 mx-auto">
+                            <i class="fa fa-star text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-dark text-center mb-4">适合全家游玩</h3>
+                        <p class="text-dark/80 text-center">
+                            游戏内容健康向上，支持多人游玩，是家庭聚会和亲子互动的最佳选择。
+                        </p>
+                    </div>
+                    
+                    <div class="bg-light p-8 rounded-2xl game-card">
+                        <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-6 mx-auto">
+                            <i class="fa fa-puzzle-piece text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-dark text-center mb-4">创意与教育</h3>
+                        <p class="text-dark/80 text-center">
+                            游戏中融入创意设计和教育元素，让玩家在娱乐中学习新知识和技能。
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- 平台筛选 -->
+                <div id="platforms" class="mb-16">
+                    <h3 class="text-2xl font-bold text-dark mb-8 text-center">游戏平台</h3>
+                    <div class="flex flex-wrap justify-center gap-3 mb-12">
+                        <button class="platform-badge bg-platform-nintendo text-white px-6 py-2 rounded-full text-sm font-medium">
+                            <i class="fa fa-gamepad mr-2"></i> Nintendo
+                        </button>
+                        <button class="platform-badge bg-platform-playstation text-white px-6 py-2 rounded-full text-sm font-medium">
+                            <i class="fa fa-playstation mr-2"></i> PlayStation
+                        </button>
+                        <button class="platform-badge bg-platform-xbox text-white px-6 py-2 rounded-full text-sm font-medium">
+                            <i class="fa fa-xbox mr-2"></i> Xbox
+                        </button>
+                        <button class="platform-badge bg-platform-mobile text-white px-6 py-2 rounded-full text-sm font-medium">
+                            <i class="fa fa-mobile mr-2"></i> 移动端
+                        </button>
+                        <button class="platform-badge bg-dark text-white px-6 py-2 rounded-full text-sm font-medium">
+                            <i class="fa fa-refresh mr-2"></i> 全部平台
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 游戏列表 -->
+                <div id="games" class="space-y-8">
+                    <!-- 游戏1 -->
+                    <div class="bg-white rounded-2xl overflow-hidden shadow-lg game-card">
+                        <div class="grid md:grid-cols-4 gap-8">
+                            <div class="md:col-span-1 relative h-64 md:h-auto">
+                                <img src="images\islandadventure.png" alt="Hello Kitty: 岛屿冒险" class="w-full h-full object-cover">
+                                <div class="absolute top-4 left-4 bg-platform-nintendo text-white text-xs font-bold px-2 py-1 rounded">
+                                    Nintendo Switch
+                                </div>
+                            </div>
+                            <div class="md:col-span-2 p-8">
+                                <div class="flex items-center mb-4">
+                                    <h3 class="text-2xl font-bold text-dark mr-4">Hello Kitty: 岛屿冒险</h3>
+                                    <div class="flex text-yellow-400 text-sm">
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star-half-o"></i>
+                                        <span class="text-dark/70 ml-2 text-sm">4.5/5.0</span>
+                                    </div>
+                                </div>
+                                <p class="text-dark/80 mb-6">
+                                    《Hello Kitty: 岛屿冒险》是一款充满乐趣的开放世界游戏，玩家将跟随Hello Kitty探索神秘岛屿，收集物品、完成任务、装饰小屋，并与岛上居民互动。游戏支持多人合作模式，适合全家一起游玩。
+                                </p>
+                                <div class="flex flex-wrap gap-3 mb-6">
+                                    <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">冒险</span>
+                                    <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">模拟</span>
+                                    <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">休闲</span>
+                                    <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">家庭</span>
+                                </div>
+                                <a href="#" class="inline-block bg-primary/10 hover:bg-primary/20 text-primary font-medium px-6 py-2 rounded-full transition-colors">
+                                    查看详情 <i class="fa fa-arrow-right ml-2"></i>
+                                </a>
+                            </div>
+                            <div class="md:col-span-1 bg-light p-8 flex flex-col justify-center">
+                                <div class="space-y-4">
+                                    <div>
+                                        <h4 class="text-dark/70 text-sm mb-1">发行时间</h4>
+                                        <p class="font-medium">2022年</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-dark/70 text-sm mb-1">游戏模式</h4>
+                                        <p class="font-medium">单人/多人</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-dark/70 text-sm mb-1">年龄分级</h4>
+                                        <p class="font-medium">全年龄</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-dark/70 text-sm mb-1">获奖情况</h4>
+                                        <p class="font-medium">最佳家庭游戏</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 游戏2 -->
+                    <div class="bg-white rounded-2xl overflow-hidden shadow-lg game-card">
+                        <div class="grid md:grid-cols-4 gap-8">
+                            <div class="md:col-span-1 relative h-64 md:h-auto">
+                                <img src="images\kaidimaoshiijie.png" alt="凯蒂猫世界" class="w-full h-full object-cover">
+                                <div class="absolute top-4 left-4 bg-platform-mobile text-white text-xs font-bold px-2 py-1 rounded">
+                                    移动端
+                                </div>
+                            </div>
+                            <div class="md:col-span-2 p-8">
+                                <div class="flex items-center mb-4">
+                                    <h3 class="text-2xl font-bold text-dark mr-4">凯蒂猫世界</h3>
+                                    <div class="flex text-yellow-400 text-sm">
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <span class="text-dark/70 ml-2 text-sm">4.0/5.0</span>
+                                    </div>
+                                </div>
+                                <p class="text-dark/80 mb-6">
+                                    《凯蒂猫世界》是由Shimada Kikaku开发、Character Soft于1992年在日本发行的横版动作游戏。玩家将控制Hello Kitty在各种关卡中冒险，收集物品、解锁新区域，并与敌人战斗。游戏画面精美，操作简单，是一款适合所有年龄段的经典游戏。
+                                </p>
+                                <div class="flex flex-wrap gap-3 mb-6">
+                                    <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">模拟</span>
+                                    <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">创意</span>
+                                    <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">时尚</span>
+                                    <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">休闲</span>
+                                </div>
+                                <a href="#" class="inline-block bg-primary/10 hover:bg-primary/20 text-primary font-medium px-6 py-2 rounded-full transition-colors">
+                                    查看详情 <i class="fa fa-arrow-right ml-2"></i>
+                                </a>
+                            </div>
+                            <div class="md:col-span-1 bg-light p-8 flex flex-col justify-center">
+                                <div class="space-y-4">
+                                    <div>
+                                        <h4 class="text-dark/70 text-sm mb-1">发行时间</h4>
+                                        <p class="font-medium">2021年</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-dark/70 text-sm mb-1">游戏模式</h4>
+                                        <p class="font-medium">单人</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-dark/70 text-sm mb-1">年龄分级</h4>
+                                        <p class="font-medium">7+</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-dark/70 text-sm mb-1">下载量</h4>
+                                        <p class="font-medium">1000万+</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 游戏3 -->
+                    <div class="bg-white rounded-2xl overflow-hidden shadow-lg game-card">
+                        <div class="grid md:grid-cols-4 gap-8">
+                            <div class="md:col-span-1 relative h-64 md:h-auto">
+                                <img src="images\bingqilinzuofang.png" alt="Hello Kitty冰淇淋作坊" class="w-full h-full object-cover">
+                                <div class="absolute top-4 left-4 bg-platform-playstation text-white text-xs font-bold px-2 py-1 rounded">
+                                    PlayStation 5
+                                </div>
+                            </div>
+                            <div class="md:col-span-2 p-8">
+                                <div class="flex items-center mb-4">
+                                    <h3 class="text-2xl font-bold text-dark mr-4">Hello Kitty冰淇淋作坊</h3>
+                                    <div class="flex text-yellow-400 text-sm">
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <span class="text-dark/70 ml-2 text-sm">5.0/5.0</span>
+                                    </div>
+                                </div>
+                                <p class="text-dark/80 mb-6">
+                                    《Hello Kitty冰淇淋作坊》是一款以三丽鸥旗下角色Hello Kitty为主题的模拟经营类手机游戏，玩家通过制作个性化冰淇淋和装饰店铺吸引顾客。
+                                </p>
+                                <div class="flex flex-wrap gap-3 mb-6">
+                                    <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">RPG</span>
+                                    <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">冒险</span>
+                                    <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">奇幻</span>
+                                    <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full">单人</span>
+                                </div>
+                                <a href="#" class="inline-block bg-primary/10 hover:bg-primary/20 text-primary font-medium px-6 py-2 rounded-full transition-colors">
+                                    查看详情 <i class="fa fa-arrow-right ml-2"></i>
+                                </a>
+                            </div>
+                            <div class="md:col-span-1 bg-light p-8 flex flex-col justify-center">
+                                <div class="space-y-4">
+                                    <div>
+                                        <h4 class="text-dark/70 text-sm mb-1">发行时间</h4>
+                                        <p class="font-medium">2023年</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-dark/70 text-sm mb-1">游戏模式</h4>
+                                        <p class="font-medium">单人</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-dark/70 text-sm mb-1">年龄分级</h4>
+                                        <p class="font-medium">全年龄</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-dark/70 text-sm mb-1">获奖情况</h4>
+                                        <p class="font-medium">最佳视觉设计</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-12">
+                    <a href="#" class="inline-flex items-center text-primary font-medium hover:underline">
+                        查看全部游戏 <i class="fa fa-long-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 游戏平台统计 -->
+        <section class="py-16 bg-light">
+            <div class="container mx-auto px-4">
+                <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <h2 class="text-2xl font-comic font-bold text-dark mb-8 text-center">游戏平台分布</h2>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="text-center">
+                            <div class="w-40 h-40 mx-auto mb-6">
+                                <canvas id="platformChart"></canvas>
+                            </div>
+                            <p class="text-dark/70">Hello Kitty游戏在各平台的发行数量统计</p>
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <h3 class="text-xl font-bold text-dark mb-6">Hello Kitty游戏发展历程</h3>
+                            <ul class="space-y-4">
+                                <li class="flex items-start">
+                                    <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold mr-4 flex-shrink-0">1980</div>
+                                    <div>
+                                        <h4 class="font-bold text-dark">首次登场</h4>
+                                        <p class="text-dark/70 text-sm">在任天堂红白机上推出首款Hello Kitty游戏《Hello Kitty的数字世界》</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold mr-4 flex-shrink-0">2000</div>
+                                    <div>
+                                        <h4 class="font-bold text-dark">掌机时代</h4>
+                                        <p class="text-dark/70 text-sm">在Game Boy Advance平台推出多款经典游戏，销量突破100万份</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold mr-4 flex-shrink-0">2010</div>
+                                    <div>
+                                        <h4 class="font-bold text-dark">移动平台</h4>
+                                        <p class="text-dark/70 text-sm">首次推出Hello Kitty手机游戏，下载量迅速突破千万</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold mr-4 flex-shrink-0">2020</div>
+                                    <div>
+                                        <h4 class="font-bold text-dark">次世代主机</h4>
+                                        <p class="text-dark/70 text-sm">在PlayStation 5和Xbox Series X推出高清重制和全新作品</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <img src="https://picsum.photos/50/50?random=1" alt="Hello Kitty Logo" class="w-10 h-10 rounded-full">
+                        <span class="text-xl font-comic font-bold">Hello Kitty</span>
+                    </div>
+                    <p class="text-white/70 mb-4">
+                        欢迎来到Hello Kitty乐园，这里有关于Hello Kitty的一切！我们致力于为粉丝提供最正宗的Hello Kitty产品和最新资讯。
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-white hover:text-primary transition-colors">
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                        <a href="#" class="text-white hover:text-primary transition-colors">
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-white hover:text-primary transition-colors">
+                            <i class="fa fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-white hover:text-primary transition-colors">
+                            <i class="fa fa-youtube-play"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">快速链接</h3>
+                    <ul class="space-y-2">
+                        <li><a href="../index.html#home" class="text-white/70 hover:text-primary transition-colors">首页</a></li>
+                        <li><a href="../index.html#about" class="text-white/70 hover:text-primary transition-colors">关于她</a></li>
+                        <li><a href="../index.html#works" class="text-white/70 hover:text-primary transition-colors">作品</a></li>
+                        <li><a href="../index.html#shop" class="text-white/70 hover:text-primary transition-colors">周边商店</a></li>
+                        <li><a href="../index.html#contact" class="text-white/70 hover:text-primary transition-colors">联系我们</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">客户服务</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-white/70 hover:text-primary transition-colors">购物指南</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-primary transition-colors">支付方式</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-primary transition-colors">配送说明</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-primary transition-colors">退换货政策</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-primary transition-colors">常见问题</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">联系我们</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="fa fa-map-marker mt-1 mr-3"></i>
+                            <span class="text-white/70">上海市静安区南京西路1266号恒隆广场46楼</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-phone mr-3"></i>
+                            <span class="text-white/70">400-888-9999</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-envelope mr-3"></i>
+                            <span class="text-white/70">contact@hellokitty.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-white/10 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-white/50 text-sm">© 2023 Hello Kitty乐园. 保留所有权利.</p>
+                <div class="flex space-x-4 mt-4 md:mt-0">
+                    <a href="#" class="text-white/50 hover:text-white text-sm transition-colors">隐私政策</a>
+                    <a href="#" class="text-white/50 hover:text-white text-sm transition-colors">使用条款</a>
+                    <a href="#" class="text-white/50 hover:text-white text-sm transition-colors">网站地图</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 回到顶部按钮 -->
+    <button id="backToTop" class="fixed bottom-6 right-6 bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg opacity-0 invisible transition-all duration-300 hover:bg-primary/90">
+        <i class="fa fa-chevron-up"></i>
+    </button>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <script>
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const nav = document.getElementById('mainNav');
+            if (window.scrollY > 50) {
+                nav.classList.add('bg-white', 'shadow-md');
+                nav.classList.remove('bg-transparent');
+            } else {
+                nav.classList.remove('bg-white', 'shadow-md');
+                nav.classList.add('bg-transparent');
+            }
+        });
+        
+        // 移动端菜单切换
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            if (mobileMenu.classList.contains('opacity-0')) {
+                mobileMenu.classList.remove('opacity-0', '-translate-y-full', 'pointer-events-none');
+                mobileMenu.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
+            } else {
+                mobileMenu.classList.add('opacity-0', '-translate-y-full', 'pointer-events-none');
+                mobileMenu.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
+            }
+        });
+        
+        // 音乐播放控制
+        const bgMusic = document.getElementById('bgMusic');
+        const musicToggle = document.getElementById('musicToggle');
+        const mobileMusicToggle = document.getElementById('mobileMusicToggle');
+        
+        function toggleMusic() {
+            if (bgMusic.paused) {
+                bgMusic.play();
+                musicToggle.innerHTML = '<i class="fa fa-pause"></i>';
+                mobileMusicToggle.innerHTML = '<i class="fa fa-pause"></i>';
+            } else {
+                bgMusic.pause();
+                musicToggle.innerHTML = '<i class="fa fa-music"></i>';
+                mobileMusicToggle.innerHTML = '<i class="fa fa-music"></i>';
+            }
+        }
+        
+        musicToggle.addEventListener('click', toggleMusic);
+        mobileMusicToggle.addEventListener('click', toggleMusic);
+        
+        // 时钟显示
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            const timeString = `${hours}:${minutes}:${seconds}`;
+            
+            document.getElementById('clock').textContent = timeString;
+            document.getElementById('mobileClock').textContent = timeString;
+        }
+        
+        // 初始更新时钟
+        updateClock();
+        // 每秒更新一次
+        setInterval(updateClock, 1000);
+        
+        // 回到顶部按钮
+        const backToTopBtn = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 300) {
+                backToTopBtn.classList.remove('opacity-0', 'invisible');
+                backToTopBtn.classList.add('opacity-100', 'visible');
+            } else {
+                backToTopBtn.classList.add('opacity-0', 'invisible');
+                backToTopBtn.classList.remove('opacity-100', 'visible');
+            }
+        });
+        
+        backToTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // 平台统计图表
+        window.addEventListener('load', function() {
+            const ctx = document.getElementById('platformChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Nintendo', 'PlayStation', 'Xbox', '移动端', '其他平台'],
+                    datasets: [{
+                        data: [35, 20, 15, 25, 5],
+                        backgroundColor: [
+                            '#E50914',
+                            '#0044CC',
+                            '#0078D7',
+                            '#4CAF50',
+                            '#8B4513'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
